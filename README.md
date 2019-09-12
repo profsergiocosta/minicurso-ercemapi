@@ -213,7 +213,11 @@ Com essas alterações é possível acessar os dados através de uma rota que in
 
 O site da transparência do Governo do Maranhão permite  visualizar os detalhes das despesas de uma dada função ou órgão administrativo. Por exemplo, o código da função administrativa \textbf{educação} é 12. Então, a \url{http://www.transparencia.ma.gov.br/app/despesas/por-funcao/2018/funcao/12} detalha como a despesa com a educação foi distribuída para cada orgão.
 
+![](figuras/gastos_por_funcao.png)
 
+
+---
+## 
 
 
 
