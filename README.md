@@ -164,7 +164,7 @@ Especificando o ano
 
 Atualizar a funcao despesa_total:
 
-```
+```python
 def despesas_total (ano):
     url_base = "http://www.transparencia.ma.gov.br/app"
     url = url_base + "/despesas/por-funcao/"+ano
@@ -188,7 +188,7 @@ def despesas_total (ano):
 
 Alterar o codigo do servidor:
 
-```
+```python
 app = Flask(__name__)
 api = Api(app)
 
@@ -213,12 +213,58 @@ Com essas alterações é possível acessar os dados através de uma rota que in
 
 O site da transparência do Governo do Maranhão permite  visualizar os detalhes das despesas de uma dada função ou órgão administrativo. Por exemplo, o código da função administrativa \textbf{educação} é 12. Então, a \url{http://www.transparencia.ma.gov.br/app/despesas/por-funcao/2018/funcao/12} detalha como a despesa com a educação foi distribuída para cada orgão.
 
-![](figuras/gastos_por_funcao.png)
+![](figuras/despesas_por_funcao.png)
 
+Então, pode-se adaptar o código do arquivo \texttt{scrapper.py} incluindo uma função que irá extrair o total das despesas e outra detalhada por função administrativa, Código
 
+modificar o codigo scraper.py
+
+```python
+import requests
+from bs4 import BeautifulSoup as BS
+def despesas_total (ano):
+    url_base = "http://www.transparencia.ma.gov.br/app"
+    url = url_base + "/despesas/por-funcao/"+ano
+    return extrai_despesas (url)
+    
+def despesas_por_funcao (cod, ano):
+    url_base = "http://www.transparencia.ma.gov.br/app"
+    url = url_base + "/despesas/por-funcao/"+ano+"/funcao/"+cod
+    return extrai_despesas (url)
+
+def extrai_despesas (url):
+    response = requests.get(url)
+    page = BS(response.text, 'lxml')
+    table = page.find ('table')
+    rows = table.find_all('tr')
+    despesas = []
+    for row in rows[1:]:
+        cols =row.find_all("td")
+        despesa = {}
+        despesa["codigo"]  = cols[0].get_text().strip()
+        despesa["nome"] = cols[1].find("a").get_text().strip()
+        despesa["url_detalhe"] = cols[1].find("a").get('href')
+        despesa["empenhado"] = cols[2].get_text().strip()
+        despesa["liquidado"] = cols[3].get_text().strip()
+        despesa["pago"] = cols[4].get_text().strip()
+        despesas.append(despesa)
+    return despesas
+   
+```
 ---
-## 
+## Adicionando a nova rota
 
+
+no arquivo app.py
+
+    from scrapper import despesas_total , despesas_por_funcao
+
+```python
+@api.route('/<string:cod_funcao>/<string:ano>')
+class DespesasPorFuncao(Resource):
+    def get(self, cod_funcao, ano):
+        return despesas_por_funcao(cod_funcao, ano)
+```
 
 
 
