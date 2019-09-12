@@ -73,6 +73,8 @@ Ao executar o código acima, será impresso um codigo HTML da tabela selecionada
 
 substitua o codigo do arquivo scapper.py pelo seguinte código:
 
+ERRATA, apenas 3 registros
+
 ```python
 import requests
 from bs4 import BeautifulSoup as BS
@@ -259,8 +261,11 @@ no arquivo app.py
 
     from scrapper import despesas_total , despesas_por_funcao
 
+ERRATA
+
+
 ```python
-@api.route('/<string:cod_funcao>/<string:ano>')
+@api.route('/despesas/<string:cod_funcao>/<string:ano>')
 class DespesasPorFuncao(Resource):
     def get(self, cod_funcao, ano):
         return despesas_por_funcao(cod_funcao, ano)
