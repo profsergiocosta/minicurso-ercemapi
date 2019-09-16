@@ -280,5 +280,127 @@ ou via browser
 ---
 ## Documentação
 
-Uma parte importante em qualquer API é uma boa documentação. Então, no quarto passo será utilizado a biblioteca Swagger\footnote{Site oficial https://swagger.io/} para a construção automatizada de documentação. A biblioteca \texttt{flask-restplus} vem com o suporte para o Swagger e já cria uma documentação básica ao acessar o endereço raiz da API. Porém, através de uma coleção de \textit{decorators} e parâmetros é possível adicionar novas informações ao código, gerando uma documentação mais detalhada como no Código \ref{lst:swagger_1}.
+Uma parte importante em qualquer API é uma boa documentação. Então, no quarto passo será utilizado a biblioteca Swagger\footnote{Site oficial https://swagger.io/} para a construção automatizada de documentação. A biblioteca \texttt{flask-restplus} vem com o suporte para o Swagger e já cria uma documentação básica ao acessar o endereço raiz da API.
 
+![](figuras/documentacao_inicial.png)
+
+Porém, através de uma coleção de \textit{decorators} e parâmetros é possível adicionar novas informações ao código, gerando uma documentação mais detalhada como no Código \ref{lst:swagger_1}.
+
+```python
+from flask import Flask
+from flask_restplus import Resource, Api, fields
+from scrapper import despesas_total, despesas_por_funcao
+
+app = Flask(__name__)
+api = Api(app = app, 
+		  version = "1.0", 
+		  title = "Transparência Maranhão", 
+          description = "Uma API não oficial com os dados sobre as receitas e despesas do Governo do Maranhão")
+          
+ns = api.namespace('despesas', description='Dados de despesas')
+
+@ns.route('/<string:ano>')
+class Despesas(Resource):
+    def get(self, ano):
+        return despesas_total(ano)
+@ns.route('/<string:cod_funcao>/<string:ano>')
+class DespesasPorFuncao(Resource):
+    def get(self, cod_funcao, ano):
+        return despesas_por_funcao(cod_funcao, ano)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
+
+As linhas 7, 8 e 9 adicionaram a versão, o nome e a descrição como informações principais da API. Além disso, uma API pode ter diferentes rotas, por exemplo, poderia ter rotas especificas para despesas e outras para receitas. Essas rotas poderiam estar agrupadas por dois diferentes \textit{namespaces}. Aqui foi então criado na linha 11, um \textit{namespace} para as despesas, incluindo sua descrição, e as linhas 13 e 17 foram adaptadas para usá-lo. O resultado da documentação pode ser observado na Figura \ref{fig:swagger_2}.
+
+![](figuras/documentacao_1.png)
+
+  
+Além das informações para a API e \textit{namespace}, é possível adicionar informações diretamente aos métodos e parâmetros, como apresentado no Código \ref{lst:swagger_2}.
+
+![](figuras/swagger_3.png)
+
+## Metadados
+
+Por fim, pode-se criar os metadados dos dados providos pela API, que incluem os tipos e as descrições dos dados. Os tipos de dados para os valores liquidados, pagos e empenhados são números, no entanto, os dados extraídos estão no formato de texto e usando a representação brasileira. Então, a conversão para número deverá considerar essa representação. Existe uma biblioteca denominada \textit{babel} que possui já implementada essa funcionalidade e pode ser instalada com o seguinte comando:
+
+    $ pipenv install babel
+
+Com a biblioteca \textit{babel} instalada, será necessário algumas atualização no arquivo \texttt{scrapper.py}. Primeiro será necessário importar a função \texttt{parse\_decimal}.
+
+
+    from babel.numbers import parse_decimal
+ 
+ Atualizar a função extrai despesas
+ 
+ ```python
+   def extrai_despesas (url):
+    response = requests.get(url)
+    page = BS(response.text, 'lxml')
+    table = page.find ('table')
+    rows = table.find_all('tr')
+    despesas = []
+    for row in rows[1:]:
+        cols =row.find_all("td")
+        despesa = {}
+        despesa["codigo"]  = cols[0].get_text().strip()
+        despesa["nome"] = cols[1].find("a").get_text().strip()
+        despesa["url_detalhe"] = cols[1].find("a").get('href')
+        despesa["empenhado"] =   parse_decimal (cols[2].get_text().strip(), locale='pt_BR')
+        despesa["liquidado"] =  parse_decimal (cols[3].get_text().strip(), locale='pt_BR')
+        despesa["pago"] =  parse_decimal (cols[4].get_text().strip(), locale='pt_BR')
+        despesas.append(despesa)
+
+    return despesas
+```
+
+
+Modelo
+
+```python
+model = api.model('Dados sobre uma função ou orgão', {
+    'codigo': fields.String(description='Código da função ou orgão', example="04"),
+    'nome': fields.String(description='Nome da função ou orgão', example="ADMINISTRACAO"),
+    'url_detalhe': fields.String(description='Endereço para mais detalhes', example="http://www.transparencia.ma.gov.br/app/despesas/por-funcao/2016/funcao/04?"),
+    'empenhado': fields.Float(description='Valor empenhado', example=821854500.93),
+    'liquidado': fields.Float(description='Valor liquidado', example=794738131.95),
+    'pago': fields.Float(description='Valor pago', example=775701742.7),
+})
+```
+
+Para associar o metadado aos dados retornados, será usado o \textit{decorator}\\ \texttt{@api.marshal\_with} em ambas rotas:
+
+```python
+@ns.route('/<string:ano>')
+class Despesas(Resource):
+    @api.marshal_with(model, mask='*')
+    @api.doc ...
+```
+
+Para associar o metadado aos dados retornados, será usado o \textit{decorator}\\ \texttt{@api.marshal\_with} em ambas rotas:
+
+
+```python
+@ns.route('/<string:ano>')
+class Despesas(Resource):
+
+    @api.marshal_with(model, mask='*')
+    @api.doc(responses={ 200: 'OK', 400: 'Despesas não encontradas' }, 
+			 params={ 'ano': 'Ano de referência para as despesas' })
+    def get(self, ano):
+        return despesas_total(ano)
+
+
+@ns.route('/<string:cod_funcao>/<string:ano>')
+class DespesasPorFuncao(Resource):
+
+    @api.marshal_with(model, mask='*')
+    @api.doc(responses={ 200: 'OK', 400: 'Despesas não encontradas' }, 
+    params={ 'ano': 'Ano de referência para as despesas',
+    'cod_funcao' : 'Código da função (educação, saúde ...) de referência para as despesas'})
+    def get(self, cod_funcao, ano):
+        return despesas_por_funcao(cod_funcao, ano)
+```
+
+![](figuras/swagger_4.png)
