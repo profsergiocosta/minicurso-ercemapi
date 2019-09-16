@@ -270,7 +270,15 @@ class DespesasPorFuncao(Resource):
     def get(self, cod_funcao, ano):
         return despesas_por_funcao(cod_funcao, ano)
 ```
+Visualizando nova rota
 
+    curl -X GET "http://localhost:5000/despesas/12/2018" -H "accept:application/json"
 
+ou via browser
+![](figuras/despesas_por_funcao.png)
 
+---
+## Documentação
+
+Uma parte importante em qualquer API é uma boa documentação. Então, no quarto passo será utilizado a biblioteca Swagger\footnote{Site oficial https://swagger.io/} para a construção automatizada de documentação. A biblioteca \texttt{flask-restplus} vem com o suporte para o Swagger e já cria uma documentação básica ao acessar o endereço raiz da API. Porém, através de uma coleção de \textit{decorators} e parâmetros é possível adicionar novas informações ao código, gerando uma documentação mais detalhada como no Código \ref{lst:swagger_1}.
 
