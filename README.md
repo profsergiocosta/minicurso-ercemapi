@@ -444,3 +444,155 @@ A Figura \ref{fig:implantacao_heroku} mostra os três passos para implantar uma 
 ![](figuras/implantacao_heroku.png)
 
 Depois de implantado, é possível testar
+
+---
+
+## Teste de análise de dados
+
+no colab 
+
+O portal da transparência do Maranhão já disponibiliza diversos dados tabelados. Porém, um usuário pode precisar de um dado que não esteja disponível diretamente. Por exemplo, o usuário poderia querer um gráfico que mostrasse a evolução temporal dos gastos por uma dada função administrativa. Sem uma API, seria necessário entrar em diversas páginas e manualmente anotar os gastos, ou salva-los e manipulá-los através de outro software. Contudo, com a API desenvolvida aqui é possível gerar este gráfico escrevendo um pouco de código em linguagens como Python, R ou JavaScript.
+
+Para exemplificar, foi escrito um código Python diretamente no Google Colab \footnote{ Google Colab pode ser acessado em: \url{https://colab.research.google.com/}}. O código completo da Figura \ref{fig:colab} pode ser acessado em \url{http://bit.ly/304z5XF}.
+
+![](figuras/colab.png)
+
+Entre com o seguinte codigo:
+
+```python
+import json, requests
+import matplotlib.pyplot as plt
+
+url = "escreva aqui a url do seu aplicativo no heroku"
+valores =[]
+anos = []
+codigo_funcao = "19" # 19 é o código para ciência e tecnologia
+for ano in range (2015, 2020):
+  r = requests.get(url+str(ano))
+  anos.append (ano)
+  dados = r.json()
+  for dado in dados:
+    if dado['codigo'] == codigo_funcao:
+      valores.append(dado['empenhado'])
+      break
+plt.bar (anos,valores)
+plt.show()
+```
+
+---
+## \subsection{Um teste simples de aplicação}
+
+Além de ser usado para análise, os dados abertos podem ser acessados por aplicativos web e móveis. Nesse caso, uma possibilidade seria desenvolver aplicativos híbridos usando a linguagem JavaScript, através de \textit{frameworks} como o Angular, React e Electron.
+
+Como o objetivo é fazer um teste simples, foi escrito um código usando a biblioteca \textit{JQuery} que executa uma requisição e imprime no console o resultado, Código \ref{lst:teste_ajax}. O código completo pode ser acessado em \url{https://repl.it/@SergioSouza1/testeapi}.
+
+crie um arquivo html com o seguinte codigo
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+$(document).ready(() =>  
+    $("button").click( () =>  $.ajax({
+        url: "url para a sua api", 
+        success: (result) => console.log (result) })
+))
+</script>
+</head>
+<body>
+<button>Executa a consulta ao REST</button>
+</body>
+</html>
+
+```
+
+Abra em um navegador, ative o web console e  click no botão:
+
+![](figuras/javascript_request.png)
+
+----
+Antes de executar o teste, modifique a URL para referenciar o serviço que foi criado no Heroku. Porém, esse simples teste irá falhar e apresentar seguinte mensagem no navegador:
+
+\begin{lstlisting}[linenumber=none]
+Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://transparencia-ma.herokuapp.com/despesas/10/2018. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing).
+\end{lstlisting}
+
+Isso ocorre porque, por padrão, o JavaScript não permite que aplicações de domínios distintos compartilhem recursos. Porém é possível habilitar o que é conhecido como CORS (que em português seria Compartilhamento de Recursos de Origem Cruzada). Então, para tudo funcionar corretamente, será necessário retornar ao ambiente de desenvolvimento da API. 
+
+Primeiro passo será instalar a extensão para dar esse suporte, que é feito pela biblioteca \texttt{flask\_cors}:
+
+\begin{lstlisting}[language=bash, numbers=none]
+pipenv install flask_cors
+\end{lstlisting}
+
+Depois no arquivo \texttt{app.py}, sera adicionado um novo \textit{import}:
+\begin{lstlisting}[language=Python]
+from flask_cors import CORS
+\end{lstlisting}
+
+E então, será executado a função CORS ao aplicativo:
+
+\begin{lstlisting}[language=Python]
+CORS(app)
+\end{lstlisting}
+
+O código completo pode ser acessado em: \url{http://bit.ly/2PcfHXZ}. 
+
+Atualizado esse código, deve-se enviar as modificações para o repositório \textit{Github} e, por fim, executar a implantação novamente no Heroku. Com o serviço implantado e atualizado, basta executar o código novamente para ser impresso os dados em JSON no console. Lembrando, que esse é um exemplo extremamente simples, porém a sua execução mostra que a API está pronta para ser usada por aplicações em JavaScript.
+
+![](figuras/javascript_request.png)
+
+---
+
+Evolução
+
+O site do governo do Maranhão possui diversos outros dados que poderão ser extraídos. Por exemplo, ao acessar um dado órgão, pela seguinte \url{http://www.transparencia.ma.gov.br/app/despesas/por-funcao/2019/funcao/12/orgao/240201} é possível ter acesso aos nomes, CPF ou CNPJ dos credores, e também os valores empenhado, liquidado e pago, como na Figura \ref{fig:credores}. \\ \\ \\
+
+![](figuras/tabela_por_unidade.png)
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=.9\columnwidth]{Figuras/tabela_por_unidade.png}
+    \caption{Credores de um dado orgão público}
+    \label{fig:credores}
+\end{figure}
+
+
+Observa-se que a tabela é muito similar a que foi extraída na Seção \ref{sec:mapeando}, com a diferença que cada credor possui um CPF ou CNPJ em vez de um código. Então o Código \ref{lst:despesas_orgao} será também muito similar ao escrito anteriormente na Seção \ref{sec:mapeando}
+
+\begin{lstlisting}[language=python, firstnumber=30, label={lst:despesas_orgao},caption={Extraindo os dados por orgão público}]
+
+def despesas_por_orgao (orgao, funcao, ano):
+    url = "http://www.transparencia.ma.gov.br/app/despesas/por-funcao/"+ano+"/funcao/"+funcao+"/orgao/"+orgao+"?#lista"
+    response = requests.get(url)
+    page = BS(response.text, 'lxml')
+    table = page.find ('table')
+    rows = table.find_all('tr')
+    despesas = []
+    for row in rows[1:]:
+        cols =row.find_all("td")
+        despesa = {}
+        despesa["nome"] = cols[0].find("a").get_text().strip()
+        despesa["url_detalhe"] = cols[0].find("a").get('href')
+        despesa["cpf/cnpj"] = cols[0].find("small").get_text().strip().replace ("CPF/CNPJ: ","")
+        despesa["empenhado"] =  parse_decimal(cols[1].get_text().strip(), locale='pt_BR')
+        despesa["liquidado"] =  parse_decimal(cols[2].get_text().strip(), locale='pt_BR')
+        despesa["pago"] = parse_decimal (cols[3].get_text().strip(), locale='pt_BR')
+        despesas.append(despesa)
+    return despesas
+\end{lstlisting}
+
+Após criar a função do Código \ref{lst:despesas_orgao}, é possível criar uma nova rota que inclui o código do órgão administrativo, por exemplo: \url{https://transparencia-ma.herokuapp.com/despesas/240206/12/2018}. Então, será necessário atualizar a rota, fazer um novo \textit{commit}, enviar as atualizações e executar um novo \textit{deploy}.
+
+O processo de transformação de dados públicos em dados abertos requer muita exploração do site de dados públicos. Por exemplo, aqui seria possível extrair ainda diversas outras informações como:
+
+\begin{itemize}
+    \item Ainda sobre despesas, é possível extrair informações detalhadas por credor. 
+    \item Além dos dados de despesas, pode-se extrair os dados de receitas de modo muito similar.
+    \item Dados sobre servidores públicos, como salário e diárias.
+    \item Transferência de valores, por exemplo, repasse a municípios.
+\end{itemize}
+
+Além desses dados é possível evoluir bastante essa API, permitindo extrair cada vez mais informações relevantes.
