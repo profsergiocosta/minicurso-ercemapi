@@ -434,6 +434,10 @@ git push -u origin master
 Nesse exemplo está sendo um repositótio HTTP, então será necessário entrar com o nome do usuário e senha para enviar os dados para o repositório, ou seja, executar o comando \textit{push}. Uma dica é trabalhar com repositório SSH ao invés de HTTP, caso esteja usando esses procedimento em um computador pessoal. 
 \end{callouttip}
 
+caso nao tenha o git instalado em seu computador, uma alternativa é fazer o upload dos arquivos diretamente no repositorio:
+
+![](figuras/github_upload.jpg)
+
 
 A Figura \ref{fig:implantacao_heroku} mostra os três passos para implantar uma aplicação no Heroku. O passo 1 cria uma aplicação Heroku com o nome \texttt{transparencia-ma}, o 2 conecta-se a aplicação ao repositório \textit{Github} e o 3 executa a implantação (\textit{deploy}) manual. Na Figura \ref{fig:implantacao_heroku} (4) apenas mostra as mensagens que são impressas durante a implantação. Além do \textit{deploy} manual, é possível marcar implantação (\textit{deploy}) automática, que irá ocorrer a cada novo \textit{commit} ao repositório github.
 
