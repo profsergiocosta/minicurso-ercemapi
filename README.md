@@ -122,10 +122,11 @@ print (table)
 
 ---
 
+## Passo 2: Extração dos dados (função de extração de despesas)
 
-substitua o codigo do arquivo scapper.py pelo seguinte código:
 
-ERRATA, apenas 3 registros
+- Substitua o codigo do arquivo `scapper.py` pelo código a seguir, já com a função `despesas_total`:
+
 
 ```python
 import requests
@@ -154,18 +155,21 @@ def despesas_total ():
 print (despesas_total())
 ```
 
-Execute o codigo novamente:
+---
+
+## Passo 2: Extração dos dados (testando a função de extração de despesas)
+
+Execute o codigo novamente, agora para testar a função de estração de despesas:
 
 ```
  $ python scrapper.py 
 [{'nome': 'ADMINISTRACAO', 'url_detalhe': 'http://www.transparencia.ma.gov.br/app/despesas/por-funcao/2019/funcao/04?', 'empenhado': '530.070.090,32', 'liquidado': '452.420.550,87', 'pago': '351.633.728,08'}, {'nome': 'AGRICULTURA', 'url_detalhe': 'http://www.transparencia.ma.gov.br/app/despesas/por-funcao/2019/funcao/20?', 'empenhado': '69.816.420,71', 'liquidado': '58.739.278,15', 'pago': '45.119.980,63'}, ...]
 ```
 
-Apos este teste, remova a seguinte linha:
+> Apos este teste, remova a seguinte linha:
+>    print (despesas_total())
 
-    print (despesas_total())
-
-Finalizado a extração
+> ![CHECKPOINT](./figuras/check_icon.png)Nesse ponto, é importante que tenha executa o comando acima, e já tenha obtido como resultado os dados no formato JSON.
 
 ---
 
