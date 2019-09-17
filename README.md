@@ -1,19 +1,49 @@
-# minicurso_ercemapi
+## Os cinco passos para transformar qualquer site de dados públicos em uma API de dados abertos
+
+* Sérgio Souza Costa
+* Mateus Vitor Duarte Sousa
+* Micael Lopes da Silva
+
+---
+## Roteiro
+
+1. Introdução
+2. Passo 1: Identificação e modelagem dos dados
+
+
+---
+
+## Introdução
+
+
+
+---
+
 
 
 ## Passo 1: Identificação e modelagem dos dados
 
-Neste trabalho será usado o site da transparência do governo do Estado do Maranhão http://www.transparencia.ma.gov.br.
+- Identificar sites com dados de interesse da sociedade e que ainda não possuem APIs
+- Muitos sites de instituições públicas ainda não migraram para dados abertos.
+- Um exemplo é o site da transparência do governo do Estado do Maranhão http://www.transparencia.ma.gov.br.
+    - Ele foi lançado em 2015 e apresenta diversas melhorias em relação ao anterior, mas ainda não disponibiliza dados abertos através de uma API. 
+    - O acesso a todos os dados requer a interação entre um usuário e um navegador web.
+    - Mesmo para baixar os dados, é necessário a interação com um usuário.
 
-Ele foi lançado em 2015 e apresenta diversas melhorias em relação ao anterior, mas ainda não disponibiliza dados abertos. O acesso a todos os dados requer a interação entre um usuário e um navegador web.
+---
 
+## Passo 1: Identificação e modelagem dos dados
 Por exemplo, ao acessar o seguinte endereço 
 * http://www.transparencia.ma.gov.br/app/despesas/por-funcao/2019#lista 
 
-o usuário irá visualizar uma página HTML com uma tabela similar a da Figura \ref{fig:desp_funcao_2019}, que descreve as despesas de cada função administrativa em 2019.
+Tem se a seguinte tabela que descreve as despesas de cada função administrativa em 2019.
 
 
 ![](figuras/dados_despesas.png)
+
+* Nesse site, já temos os dados bem estruturados, o que é preciso estraí-los e criar o acesso através de uma API.
+
+Vamos para o PASSO 2 ?
 
 
 
@@ -22,8 +52,19 @@ o usuário irá visualizar uma página HTML com uma tabela similar a da Figura \
 
 ## Passo 2: Extração dos dados
 
+* Existem hoje diversas bibliotecas nas mais distintas linguagens capazes de executar o "web scrapping". 
 
-Instalar o pipenv:
+* Nesse minicurso, usaremos o Python e a biblioteca beautifulsoup4.
+
+* Vamos configurar o ambiente ?
+
+
+---
+## Passo 2: Extração dos dados (configurando o ambiente)
+
+* Antes de mais nada, iremos usar o pipenv, então vamos lopo instalar.
+
+* Abra um terminal e instale o pipenv com o seguinte comando
 
     $ pip install pipenv
 
