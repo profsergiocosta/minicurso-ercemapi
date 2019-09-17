@@ -404,3 +404,39 @@ class DespesasPorFuncao(Resource):
 ```
 
 ![](figuras/swagger_4.png)
+
+----
+## Implantação
+
+O quinto e último passo tem como objetivo implantar a API desenvolvida. Aqui será usada a plataforma Heroku\footnote{Site oficial: \url{https://www.heroku.com/}}. Então, antes de prosseguir será necessário criar uma conta gratuita nesse portal. Para a implantação será usado também o gerenciador de configuração Git e o repositório Github (\url{http://github.com/}.
+ 
+ Antes de mais nada, vamos instalar o \textit{gunicorn} (\url{https://gunicorn.org/}), um servidor WSGI (Web Server Gateway Interface) necessário para executar os \textit{scripts} Python do lado do servidor. De modo similar as instalações anteriores, basta executar o seguinte comando:
+ 
+
+    $ pipenv install gunicorn
+
+Depois de instalado, será necessário criar um arquivo denominado Procfile\footnote{Mais informações sobre o Procfile \url{https://devcenter.heroku.com/articles/procfile}} que é utilizado pelo Heroku para a inicialização do serviço. Nesse caos ele indicará o WSGI e o nome do aplicativo. Neste caso o nome do aplicativo é \texttt{app}, e está localizado no módulo (ou arquivo) \texttt{app.py}.
+
+web: gunicorn app:app
+
+
+Como será usado o repositório \textit{Github}, garanta que já tenha uma conta no \textit{github} e o aplicativo \textit{git} instalado e configurado no computador.  Com isso, será necessário logar na sua conta, criar um repositório denominado \texttt{transparencia-ma} e executar os seguintes comandos porém usando o repositório que foi criado.
+
+\begin{lstlisting}[language=bash, numbers=none]
+git init
+git add *
+git commit -m "first commit"
+git remote add origin https://github.com/profsergiocosta/transparencia-ma.git
+git push -u origin master
+\end{lstlisting}
+
+\begin{callouttip}{Fica a dica}
+Nesse exemplo está sendo um repositótio HTTP, então será necessário entrar com o nome do usuário e senha para enviar os dados para o repositório, ou seja, executar o comando \textit{push}. Uma dica é trabalhar com repositório SSH ao invés de HTTP, caso esteja usando esses procedimento em um computador pessoal. 
+\end{callouttip}
+
+
+A Figura \ref{fig:implantacao_heroku} mostra os três passos para implantar uma aplicação no Heroku. O passo 1 cria uma aplicação Heroku com o nome \texttt{transparencia-ma}, o 2 conecta-se a aplicação ao repositório \textit{Github} e o 3 executa a implantação (\textit{deploy}) manual. Na Figura \ref{fig:implantacao_heroku} (4) apenas mostra as mensagens que são impressas durante a implantação. Além do \textit{deploy} manual, é possível marcar implantação (\textit{deploy}) automática, que irá ocorrer a cada novo \textit{commit} ao repositório github.
+
+![](figuras/implantacao_heroku.png)
+
+Depois de implantado, é possível testar
