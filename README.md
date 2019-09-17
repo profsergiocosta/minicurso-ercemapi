@@ -60,25 +60,31 @@ Vamos para o PASSO 2 ?
 
 
 ---
-## Passo 2: Extração dos dados (configurando o ambiente)
+## Passo 2: Extração dos dados (instalando o pipenv)
 
 * Antes de mais nada, iremos usar o pipenv, então vamos lopo instalar.
 
 * Abra um terminal e instale o pipenv com o seguinte comando
 
-    $ pip install pipenv
+        $ pip install pipenv
 
-Para criar o projeto, crie uma pasta chamada transparencia-ma, e nela execute o seguinte comando:
+---
+## Passo 2: Extração dos dados (criando o projeto e instalando as depedências)
 
+- Para criar o projeto, crie uma pasta chamada transparencia-ma, e nela execute o seguinte comando:
 
-    $ pipenv --three
+        $ pipenv --three
 
-Instalando as depedências básicas
+- Instalando as depedências básicas:
 
-    $ pipenv install requests beautifulsoup4 lxml
+      $ pipenv install requests beautifulsoup4 lxml
     
 ---
-## Testando
+## Passo 2: Extração dos dados (testando a configuração inicial)
+
+- Antes de prosseguir, vamos ver se está tudo ok com as instalações.
+
+- Crie um arquivo chamado `scrapper.py` com o seguinte código:
 
 ```python
 import requests
@@ -91,12 +97,12 @@ table = page.find ('table')
 print (table)
 ```
 
-Testando a execução:
+- No terminal, inicialize o ambiente `pipenv` e então execute o arquivo `scrapper.py`
 
-    $ pipenv shell
-    $ python scrapper.py 
+        $ pipenv shell
+        $ python scrapper.py 
     
-Ao executar o código acima, será impresso um codigo HTML da tabela selecionada.
+- Ao executar o comando acima, será impresso um codigo HTML da tabela selecionada.
 
 ```html
 <tr>
@@ -111,6 +117,11 @@ Ao executar o código acima, será impresso um codigo HTML da tabela selecionada
 <td>13.433.197,71</td>
 </tr>
 ```
+
+> CheckPoint: Conseguiu executar o comando acima ? Imprimiu o HTML ? Ok, podemos seguir:
+
+---
+
 
 substitua o codigo do arquivo scapper.py pelo seguinte código:
 
