@@ -364,7 +364,14 @@ curl -X GET "http://localhost:5000/despesas/12/2018" -H "accept:application/json
 
 ![documentacao_inicial](./figuras/documentacao_inicial.png)
 
-Porém, através de uma coleção de \textit{decorators} e parâmetros é possível adicionar novas informações ao código, gerando uma documentação mais detalhada como no Código \ref{lst:swagger_1}.
+---
+
+## Passo 4: Documentação (adicionando novas informações)
+
+* Adicionando a versão, o nome e a descrição como informações principais da API. 
+
+* Criando o namespaces `despesas` para agrupar as rotas. Com a evolução da API, poderia ser criado um namespace `receitas`.
+
 
 ```python
 from flask import Flask
@@ -391,28 +398,59 @@ class DespesasPorFuncao(Resource):
 if __name__ == '__main__':
     app.run(debug=True)
 ```
+---
 
-As linhas 7, 8 e 9 adicionaram a versão, o nome e a descrição como informações principais da API. Além disso, uma API pode ter diferentes rotas, por exemplo, poderia ter rotas especificas para despesas e outras para receitas. Essas rotas poderiam estar agrupadas por dois diferentes \textit{namespaces}. Aqui foi então criado na linha 11, um \textit{namespace} para as despesas, incluindo sua descrição, e as linhas 13 e 17 foram adaptadas para usá-lo. O resultado da documentação pode ser observado na Figura \ref{fig:swagger_2}.
+## Passo 4: Documentação (documentação com as novas informações)
 
-![](figuras/documentacao_1.png)
+Com as informações adicionadas previamente, já teriamos o seguinte resultado
 
+![documentacao_1](figuras/swagger_2.png)
+
+---
+
+## Passo 5: Documentação (atualizando a documentação para as rotas e métodos)
+
+Atualizando a documentação as rotas e métodos, através do decorator `api.doc`.
+
+```python
+@ns.route('/<string:ano>')
+class Despesas(Resource):
+    @api.doc(responses={ 200: 'OK', 400: 'Despesas não encontradas' },  params={ 'ano': 'Ano de referência para as despesas' })
+    def get(self, ano):
+        return despesas.despesas_total(ano)
+        
+@ns.route('/<string:cod_funcao>/<string:ano>')
+class DespesasPorFuncao(Resource):
+    @api.doc(responses={ 200: 'OK', 400: 'Despesas não encontradas' },
+     params={ 'ano': 'Ano de referência para as despesas',
+    'cod_funcao' : 'Código da função (educação, saúde ...) de referência para as despesas'})
+    def get(self, cod_funcao, ano):
+        return despesas.despesas_por_funcao(cod_funcao, ano)
+```
   
-Além das informações para a API e \textit{namespace}, é possível adicionar informações diretamente aos métodos e parâmetros, como apresentado no Código \ref{lst:swagger_2}.
+Tendo como resultado:
 
 ![](figuras/swagger_3.png)
 
-## Metadados
+---
 
-Por fim, pode-se criar os metadados dos dados providos pela API, que incluem os tipos e as descrições dos dados. Os tipos de dados para os valores liquidados, pagos e empenhados são números, no entanto, os dados extraídos estão no formato de texto e usando a representação brasileira. Então, a conversão para número deverá considerar essa representação. Existe uma biblioteca denominada \textit{babel} que possui já implementada essa funcionalidade e pode ser instalada com o seguinte comando:
+## Passo 5: Documentação (atualizando os tipos de dados)
 
-    $ pipenv install babel
+- Os metadados, são importantes para descrever os dados, incluindo tipos de dados e exemplos de valores.
 
-Com a biblioteca \textit{babel} instalada, será necessário algumas atualização no arquivo \texttt{scrapper.py}. Primeiro será necessário importar a função \texttt{parse\_decimal}.
+- Antes de definir os metadados, vamos converter os valores liquidados, pagos e empenhados para números, pois atualmente eles estão como strings.
 
+- Como eles estão no formato brasileiro para os números, vamos usar uma biblioteca especifica para a conversão:
 
+        $ pipenv install babel
+
+- Agora será necessário importar a função `parse_decimal`.
+
+```python
     from babel.numbers import parse_decimal
- 
- Atualizar a função extrai despesas
+ ```
+
+ Atualizar a função `extrai_despesas`
  
  ```python
    def extrai_despesas (url):
@@ -434,9 +472,11 @@ Com a biblioteca \textit{babel} instalada, será necessário algumas atualizaç�
 
     return despesas
 ```
+---
 
+## Passo 5: Documentação (atualizando os tipos de dados)
 
-Modelo
+- Com a atualização dos tipos de dados, podemos criar de fato os metadados.
 
 ```python
 model = api.model('Dados sobre uma função ou orgão', {
@@ -449,16 +489,8 @@ model = api.model('Dados sobre uma função ou orgão', {
 })
 ```
 
-Para associar o metadado aos dados retornados, será usado o \textit{decorator}\\ \texttt{@api.marshal\_with} em ambas rotas:
+- Para associar o metadado aos dados retornados, será usado o `decorator` `@api.marshal_with` em ambas rotas:
 
-```python
-@ns.route('/<string:ano>')
-class Despesas(Resource):
-    @api.marshal_with(model, mask='*')
-    @api.doc ...
-```
-
-Para associar o metadado aos dados retornados, será usado o \textit{decorator}\\ \texttt{@api.marshal\_with} em ambas rotas:
 
 
 ```python
@@ -483,22 +515,38 @@ class DespesasPorFuncao(Resource):
         return despesas_por_funcao(cod_funcao, ano)
 ```
 
+---
+
+## Passo 5: Documentação (visualizando os metadados)
+
+- Agora podemos visualizar os metadados na documentação, já sabemos os tipos de dados e exemplos de valores:
+
 ![](figuras/swagger_4.png)
 
 ----
-## Implantação
+## Passo 6: Implantação (pré-requisitos)
 
-O quinto e último passo tem como objetivo implantar a API desenvolvida. Aqui será usada a plataforma Heroku\footnote{Site oficial: \url{https://www.heroku.com/}}. Então, antes de prosseguir será necessário criar uma conta gratuita nesse portal. Para a implantação será usado também o gerenciador de configuração Git e o repositório Github (\url{http://github.com/}.
+- O quinto e último passo tem como objetivo implantar a API desenvolvida. 
+
+- Será usado o Heroku, caso ainda não tenha uma conta, crie logo :)
+
+- Para a implantação será usado também o gerenciador de configuração Git e o repositório Github http://github.com/. Vais precisar ter uma conta também.
  
- Antes de mais nada, vamos instalar o \textit{gunicorn} (\url{https://gunicorn.org/}), um servidor WSGI (Web Server Gateway Interface) necessário para executar os \textit{scripts} Python do lado do servidor. De modo similar as instalações anteriores, basta executar o seguinte comando:
- 
+ ----
+## Passo 6: Implantação (preparando o projeto)
 
-    $ pipenv install gunicorn
+- Instale o servidor WSGI (Web Server Gateway Interface) gunicorn.
+    
+        $ pipenv install gunicorn
 
-Depois de instalado, será necessário criar um arquivo denominado Procfile\footnote{Mais informações sobre o Procfile \url{https://devcenter.heroku.com/articles/procfile}} que é utilizado pelo Heroku para a inicialização do serviço. Nesse caos ele indicará o WSGI e o nome do aplicativo. Neste caso o nome do aplicativo é \texttt{app}, e está localizado no módulo (ou arquivo) \texttt{app.py}.
+- Crie um arquivo denominado Procfile (https://devcenter.heroku.com/articles/procfile) que é utilizado pelo Heroku para a inicialização do serviço. 
 
-web: gunicorn app:app
+- Ele indica o WSGI e o nome do aplicativo:
 
+        web: gunicorn app:app
+
+----
+## Passo 6: Implantação (preparando o repositorio)
 
 Como será usado o repositório \textit{Github}, garanta que já tenha uma conta no \textit{github} e o aplicativo \textit{git} instalado e configurado no computador.  Com isso, será necessário logar na sua conta, criar um repositório denominado \texttt{transparencia-ma} e executar os seguintes comandos porém usando o repositório que foi criado.
 
