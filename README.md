@@ -43,6 +43,8 @@ Tem se a seguinte tabela que descreve as despesas de cada função administrativ
 
 * Nesse site, já temos os dados bem estruturados, o que é preciso estraí-los e criar o acesso através de uma API.
 
+* O processo de identificação dos dados poderá ser feito e refeito, a medida que exploramos o site de interesse.
+
 Vamos para o PASSO 2 ?
 
 
@@ -118,7 +120,7 @@ print (table)
 </tr>
 ```
 
-> CheckPoint: Conseguiu executar o comando acima ? Imprimiu o HTML ? Ok, podemos seguir:
+> > ![CHECKPOINT](./figuras/check_icon.png) Conseguiu executar o comando acima ? Imprimiu o HTML ? Ok, podemos seguir:
 
 ---
 
@@ -167,19 +169,26 @@ Execute o codigo novamente, agora para testar a função de estração de despes
 ```
 
 > Apos este teste, remova a seguinte linha:
->    print (despesas_total())
+>
+>    ```print (despesas_total()```)
 
 > ![CHECKPOINT](./figuras/check_icon.png)Nesse ponto, é importante que tenha executa o comando acima, e já tenha obtido como resultado os dados no formato JSON.
 
 ---
 
-## Desenvolvimento da API
+## Passo 3: Desenvolvimento da API (instalando ...)
 
-Primeiro instale o framework
+* Depois de criado a função `despesas_total`, podemos partir para o desenvolvimento da API.
 
-    $ pipenv install flask-restplus
+* Primeiro instale o framework flask, que será usado para criar a API:
+
+        $ pipenv install flask-restplus
     
-Escrevendo uma API bem simples, crie um arquivo app.py com o seguinte código:
+---
+
+## Passo 3: Desenvolvimento da API (versão 0.001)
+
+- Para ter uma API bem simples, crie um arquivo `app.py` com o seguinte código:
 
 ```python
 from flask import Flask
@@ -198,7 +207,7 @@ if __name__ == '__main__':
     app.run(debug=True)
 ```
 
-Para testar o servidor:
+- Pronto, já pode iniciar a API:
 
 ```
 $ python app.py
@@ -212,15 +221,18 @@ $ python app.py
  * Debugger PIN: 230-864-203
  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 ```
+---
 
-Testando no navegador:
+## Passo 3: Desenvolvimento da API (testando a versão 0.001)
+
+- Podemos testar diretamente no navegador, basta entrar com o seguinte endereço http://127.0.0.1:5000/, já será retornado os dados como na figura:
 
 ![](figuras/testeapi_1.png)
 
 ---
-Especificando o ano
+## Passo 3: Desenvolvimento da API (versão 0.002, incluindo o ano)
 
-Atualizar a funcao despesa_total:
+- A funcao `despesa_total` está sempre retornando os dados para o ano de 2019. Podemos mudar isso, alterando ela como no código abaixo:
 
 ```python
 def despesas_total (ano):
@@ -244,7 +256,7 @@ def despesas_total (ano):
     return despesas
 ```
 
-Alterar o codigo do servidor:
+- Precisa atualizar a rota lá na API, para incluir o ano:
 
 ```python
 app = Flask(__name__)
@@ -260,22 +272,25 @@ if __name__ == '__main__':
 ```
 
 ---
+## Passo 3: Desenvolvimento da API (testando a versão 0.002)
 
-Testando novamente:
-
-Com essas alterações é possível acessar os dados através de uma rota que inclui o ano de referência para os dados. Por exemplo, os dados do ano de 2016 poderão ser acessados através da seguinte URL: \url{http://localhost:5000/despesas/2016}. 
+- Agora os dados do ano de 2016 poderão ser acessados através da seguinte URL: http://localhost:5000/despesas/2016. 
 
 
 ---
-## Despesas por função
+## Passo 3: Desenvolvimento da API (versão 0.002, despesas por função)
 
-O site da transparência do Governo do Maranhão permite  visualizar os detalhes das despesas de uma dada função ou órgão administrativo. Por exemplo, o código da função administrativa \textbf{educação} é 12. Então, a \url{http://www.transparencia.ma.gov.br/app/despesas/por-funcao/2018/funcao/12} detalha como a despesa com a educação foi distribuída para cada orgão.
+- O site da transparência do Governo do Maranhão permite  visualizar os detalhes das despesas de uma dada função ou órgão administrativo. 
+- Por exemplo, o código da função administrativa "educação" é 12. Então, a http://www.transparencia.ma.gov.br/app/despesas/por-funcao/2018/funcao/12 detalha como a despesa com a educação foi distribuída para cada orgão.
 
 ![](figuras/despesas_por_funcao.png)
 
-Então, pode-se adaptar o código do arquivo \texttt{scrapper.py} incluindo uma função que irá extrair o total das despesas e outra detalhada por função administrativa, Código
+---
 
-modificar o codigo scraper.py
+## Passo 3: Desenvolvimento da API (versão 0.003, adaptando a extração para considerar a função administrativa)
+
+- Vamos adaptar o código do arquivo `scrapper.py` incluindo uma função que irá extrair o total das despesas e outra detalhada por função administrativa:
+
 
 ```python
 import requests
@@ -310,15 +325,15 @@ def extrai_despesas (url):
    
 ```
 ---
-## Adicionando a nova rota
+## Passo 3: Desenvolvimento da API (versão 0.003, adicionando a nova rota)
 
 
-no arquivo app.py
+- Para atualizar a API e a rota, primeiro importe a nova função:
 
-    from scrapper import despesas_total , despesas_por_funcao
-
-ERRATA
-
+```python
+from scrapper import despesas_total , despesas_por_funcao
+```
+- Agora adiciona a seguinte rota:
 
 ```python
 @api.route('/despesas/<string:cod_funcao>/<string:ano>')
@@ -326,19 +341,28 @@ class DespesasPorFuncao(Resource):
     def get(self, cod_funcao, ano):
         return despesas_por_funcao(cod_funcao, ano)
 ```
-Visualizando nova rota
 
-    curl -X GET "http://localhost:5000/despesas/12/2018" -H "accept:application/json"
+## Passo 3: Desenvolvimento da API (testando a nova rota)
 
-ou via browser
+- Caso o servidor não esteja em execução, inicie-o
+- Teste a nova rota em um navegador
+
 ![](figuras/despesas_por_funcao.png)
 
+ou diretamente pelo console:
+```
+curl -X GET "http://localhost:5000/despesas/12/2018" -H "accept:application/json"
+```
+
+
 ---
-## Documentação
+## Passo 4: Documentação
 
-Uma parte importante em qualquer API é uma boa documentação. Então, no quarto passo será utilizado a biblioteca Swagger\footnote{Site oficial https://swagger.io/} para a construção automatizada de documentação. A biblioteca \texttt{flask-restplus} vem com o suporte para o Swagger e já cria uma documentação básica ao acessar o endereço raiz da API.
+- Uma parte importante em qualquer API é uma boa documentação. Então, no quarto passo será utilizado a biblioteca Swagger
+ 
+- A biblioteca flask-restplus vem com o suporte para o Swagger e já cria uma documentação básica ao acessar o endereço raiz da API, como na figura abaixo:
 
-![](figuras/documentacao_inicial.png)
+![documentacao_inicial](./figuras/documentacao_inicial.png)
 
 Porém, através de uma coleção de \textit{decorators} e parâmetros é possível adicionar novas informações ao código, gerando uma documentação mais detalhada como no Código \ref{lst:swagger_1}.
 
