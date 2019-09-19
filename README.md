@@ -10,16 +10,54 @@
 1. Introdução
 2. Passo 1: Identificação e modelagem dos dados
 
+Considerações finais
+
 
 ---
 
 ## Introdução
 
+- A Constituição de 1988 foi reforçado através Lei de Acesso à Informação (http://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm) demanda das instituições disponibilizar os seus dados públicos.
+
+- Dados públicos são todos aqueles sem nenhuma restrição.
+
+- Dados abertos, por sa vez precisam seguir os seguintes princípios:    
+    - ser completos, 
+    - primários, 
+    - atuais, 
+    - acessíveis, 
+    - compreensíveis por máquina,
+    - não proprietários e 
+    - livres de licença
+
+- Atualmente espera-se que tudo que não for sigiloso esteja disponível na internet no formato de dados abertos, ou seja, não basta disponibilizar quando solicitado⁠
+
+---
+
+## Introdução
+
+- O objetivo desse minicurso é apresentar uma solução para expor os dados públicos como dados abertos utilizando para isso a extração de dados e disponibilizá-los através de uma API implantada na plataforma Heroku.
+
+---
+## Introdução (principais requisitos)
+
+- Ter instalado e configurado o interpretador da Linguagem Python e o instalador de pacotes PIP (https://www.python.org/).
+- Ter uma conta na Plataforma Heroku (https://www.heroku.com/).
+- Ter uma conta no Github (https://github.com/).
+- Ter instalado o Git (https://git-scm.com/)
 
 
 ---
 
+## Introdução (principais tecnologias)
 
+As principais tecnologias usadas são:
+
+![principais tecnologias usadas](figuras/minicurso_tecnologias.png)
+---
+
+
+---
 
 ## Passo 1: Identificação e modelagem dos dados
 
@@ -408,7 +446,7 @@ Com as informações adicionadas previamente, já teriamos o seguinte resultado
 
 ---
 
-## Passo 5: Documentação (atualizando a documentação para as rotas e métodos)
+## Passo 4: Documentação (atualizando a documentação para as rotas e métodos)
 
 Atualizando a documentação as rotas e métodos, através do decorator `api.doc`.
 
@@ -434,7 +472,7 @@ Tendo como resultado:
 
 ---
 
-## Passo 5: Documentação (atualizando os tipos de dados)
+## Passo 4: Documentação (atualizando os tipos de dados)
 
 - Os metadados, são importantes para descrever os dados, incluindo tipos de dados e exemplos de valores.
 
@@ -474,7 +512,7 @@ Tendo como resultado:
 ```
 ---
 
-## Passo 5: Documentação (atualizando os tipos de dados)
+## Passo 4: Documentação (atualizando os tipos de dados)
 
 - Com a atualização dos tipos de dados, podemos criar de fato os metadados.
 
@@ -517,14 +555,14 @@ class DespesasPorFuncao(Resource):
 
 ---
 
-## Passo 5: Documentação (visualizando os metadados)
+## Passo 4: Documentação (visualizando os metadados)
 
 - Agora podemos visualizar os metadados na documentação, já sabemos os tipos de dados e exemplos de valores:
 
 ![](figuras/swagger_4.png)
 
 ----
-## Passo 6: Implantação (pré-requisitos)
+## Passo 5: Implantação (pré-requisitos)
 
 - O quinto e último passo tem como objetivo implantar a API desenvolvida. 
 
@@ -533,7 +571,7 @@ class DespesasPorFuncao(Resource):
 - Para a implantação será usado também o gerenciador de configuração Git e o repositório Github http://github.com/. Vais precisar ter uma conta também.
  
  ----
-## Passo 6: Implantação (preparando o projeto)
+## Passo 5: Implantação (preparando o projeto)
 
 - Instale o servidor WSGI (Web Server Gateway Interface) gunicorn.
     
@@ -546,46 +584,72 @@ class DespesasPorFuncao(Resource):
         web: gunicorn app:app
 
 ----
-## Passo 6: Implantação (preparando o repositorio)
+## Passo 5: Implantação (preparando o repositorio no github usando git)
 
-Como será usado o repositório \textit{Github}, garanta que já tenha uma conta no \textit{github} e o aplicativo \textit{git} instalado e configurado no computador.  Com isso, será necessário logar na sua conta, criar um repositório denominado \texttt{transparencia-ma} e executar os seguintes comandos porém usando o repositório que foi criado.
+- Logue na sua conta no Github e crie um repositório chamado transparencia-ma:
 
-\begin{lstlisting}[language=bash, numbers=none]
+- Caso tenha o git instalado, execute os seguintes comandos a partir da pasta do teu projeto. 
+
+- Lembrem de substituir `https://github.com/profsergiocosta/transparencia-ma.git` pelo repositorio que criou
+
+
+```bash
 git init
 git add *
 git commit -m "first commit"
 git remote add origin https://github.com/profsergiocosta/transparencia-ma.git
 git push -u origin master
-\end{lstlisting}
+```
 
-\begin{callouttip}{Fica a dica}
-Nesse exemplo está sendo um repositótio HTTP, então será necessário entrar com o nome do usuário e senha para enviar os dados para o repositório, ou seja, executar o comando \textit{push}. Uma dica é trabalhar com repositório SSH ao invés de HTTP, caso esteja usando esses procedimento em um computador pessoal. 
-\end{callouttip}
+>>Fica a dica
+>>
+>>Nesse exemplo está sendo um repositótio HTTP, então será necessário entrar com o nome do usuário e senha para enviar os dados para o repositório, ou seja, executar o comando push. Uma dica é trabalhar com repositório SSH ao invés de HTTP, caso esteja usando esses procedimento em um computador pessoal. 
 
-caso nao tenha o git instalado em seu computador, uma alternativa é fazer o upload dos arquivos diretamente no repositorio:
+----
+## Passo 5: Implantação (preparando o repositorio no github fazendo upload dos arquivos)
+
+- Caso nao tenha o git instalado em seu computador, uma alternativa é fazer o upload dos arquivos diretamente no repositorio:
 
 ![](figuras/github_upload.jpg)
 
 
-A Figura \ref{fig:implantacao_heroku} mostra os três passos para implantar uma aplicação no Heroku. O passo 1 cria uma aplicação Heroku com o nome \texttt{transparencia-ma}, o 2 conecta-se a aplicação ao repositório \textit{Github} e o 3 executa a implantação (\textit{deploy}) manual. Na Figura \ref{fig:implantacao_heroku} (4) apenas mostra as mensagens que são impressas durante a implantação. Além do \textit{deploy} manual, é possível marcar implantação (\textit{deploy}) automática, que irá ocorrer a cada novo \textit{commit} ao repositório github.
+----
+## Passo 5: Implantação (fazendo o deploy no Heroku)
+
+- O deploy é feito em 4 passos:
+
+    - O passo 1 cria uma aplicação Heroku com o nome transparencia-ma (ou outro nome ainda disponível)
+    - Passo 2 conecta-se a aplicação ao repositório Github.
+    - Passo 3 executa a implantação (deploy) manual. 
+    - Passo 4, verifiquem as mensagens para saber se o aplicativo foi implantado com sucesso.
+
 
 ![](figuras/implantacao_heroku.png)
 
-Depois de implantado, é possível testar
+
 
 ---
 
-## Teste de análise de dados
+## Passo extra: Experimentando a API  (análise de dados)
 
-no colab 
+- O portal da transparência do Maranhão já disponibiliza diversos dados tabelados. Porém, um usuário pode precisar de um dado que não esteja disponível diretamente. 
 
-O portal da transparência do Maranhão já disponibiliza diversos dados tabelados. Porém, um usuário pode precisar de um dado que não esteja disponível diretamente. Por exemplo, o usuário poderia querer um gráfico que mostrasse a evolução temporal dos gastos por uma dada função administrativa. Sem uma API, seria necessário entrar em diversas páginas e manualmente anotar os gastos, ou salva-los e manipulá-los através de outro software. Contudo, com a API desenvolvida aqui é possível gerar este gráfico escrevendo um pouco de código em linguagens como Python, R ou JavaScript.
+- Por exemplo, o usuário poderia querer um gráfico que mostrasse a evolução temporal dos gastos por uma dada função administrativa. 
 
-Para exemplificar, foi escrito um código Python diretamente no Google Colab \footnote{ Google Colab pode ser acessado em: \url{https://colab.research.google.com/}}. O código completo da Figura \ref{fig:colab} pode ser acessado em \url{http://bit.ly/304z5XF}.
+- Sem uma API, seria necessário entrar em diversas páginas e manualmente anotar os gastos, ou salva-los e manipulá-los através de outro software. 
+
+- Contudo, com a API desenvolvida aqui é possível gerar este gráfico escrevendo um pouco de código em linguagens como Python, R ou JavaScript.
+
+
+---
+
+## Passo extra: Experimentando a API  (análise de dados)
+
+- Para exemplificar, foi escrito um código Python diretamente no Google Colab (https://colab.research.google.com/).
 
 ![](figuras/colab.png)
 
-Entre com o seguinte codigo:
+- Entrem com o seguinte codigo:
 
 ```python
 import json, requests
@@ -607,14 +671,20 @@ plt.bar (anos,valores)
 plt.show()
 ```
 
+- O resultado será:
+
+![gráfico](figuras/experimentando.png)
+
 ---
-## \subsection{Um teste simples de aplicação}
+## Passo extra: Experimentando a API  (aplicação JavaScript)
 
-Além de ser usado para análise, os dados abertos podem ser acessados por aplicativos web e móveis. Nesse caso, uma possibilidade seria desenvolver aplicativos híbridos usando a linguagem JavaScript, através de \textit{frameworks} como o Angular, React e Electron.
+- Além de ser usado para análise, os dados abertos podem ser acessados por aplicativos web e móveis. Nesse caso, uma possibilidade seria desenvolver aplicativos híbridos usando a linguagem JavaScript, através de  como o Angular, React e Electron.
 
-Como o objetivo é fazer um teste simples, foi escrito um código usando a biblioteca \textit{JQuery} que executa uma requisição e imprime no console o resultado, Código \ref{lst:teste_ajax}. O código completo pode ser acessado em \url{https://repl.it/@SergioSouza1/testeapi}.
+- Como o objetivo é fazer um teste simples, foi escrito um código usando a biblioteca a velha e boa JQuery.
 
-crie um arquivo html com o seguinte codigo
+- Como é só uma experimentação, a idéia é  executar uma requisição e imprimir no console o resultado.
+
+- Então crie um arquivo HTML com o seguinte codigo
 
 ```html
 <!DOCTYPE html>
@@ -636,62 +706,70 @@ $(document).ready(() =>
 
 ```
 
-Abra em um navegador, ative o web console e  click no botão:
-
-![](figuras/javascript_request.png)
 
 ----
-Antes de executar o teste, modifique a URL para referenciar o serviço que foi criado no Heroku. Porém, esse simples teste irá falhar e apresentar seguinte mensagem no navegador:
+## Passo extra: Experimentando a API  (aplicação JavaScript)
 
-\begin{lstlisting}[linenumber=none]
-Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://transparencia-ma.herokuapp.com/despesas/10/2018. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing).
-\end{lstlisting}
 
-Isso ocorre porque, por padrão, o JavaScript não permite que aplicações de domínios distintos compartilhem recursos. Porém é possível habilitar o que é conhecido como CORS (que em português seria Compartilhamento de Recursos de Origem Cruzada). Então, para tudo funcionar corretamente, será necessário retornar ao ambiente de desenvolvimento da API. 
 
-Primeiro passo será instalar a extensão para dar esse suporte, que é feito pela biblioteca \texttt{flask\_cors}:
-
-\begin{lstlisting}[language=bash, numbers=none]
-pipenv install flask_cors
-\end{lstlisting}
-
-Depois no arquivo \texttt{app.py}, sera adicionado um novo \textit{import}:
-\begin{lstlisting}[language=Python]
-from flask_cors import CORS
-\end{lstlisting}
-
-E então, será executado a função CORS ao aplicativo:
-
-\begin{lstlisting}[language=Python]
-CORS(app)
-\end{lstlisting}
-
-O código completo pode ser acessado em: \url{http://bit.ly/2PcfHXZ}. 
-
-Atualizado esse código, deve-se enviar as modificações para o repositório \textit{Github} e, por fim, executar a implantação novamente no Heroku. Com o serviço implantado e atualizado, basta executar o código novamente para ser impresso os dados em JSON no console. Lembrando, que esse é um exemplo extremamente simples, porém a sua execução mostra que a API está pronta para ser usada por aplicações em JavaScript.
+- Antes de abrir o HTML no seu navegador, modifique a URL para referenciar o serviço que foi criado no Heroku. Porém, esse simples teste irá falhar e apresentar seguinte mensagem no navegador:
 
 ![](figuras/javascript_request.png)
+
+- Lembrem de ativar o web console e  clicar no botão.
+
+-  A mensagem de Erro será:
+
+```
+Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://transparencia-ma.herokuapp.com/despesas/10/2018. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing).
+```
+
+- Isso ocorre porque, por padrão, o JavaScript não permite que aplicações de domínios distintos compartilhem recursos. Porém é possível habilitar o que é conhecido como CORS (que em português seria Compartilhamento de Recursos de Origem Cruzada). 
+- Então, para tudo funcionar corretamente, será necessário retornar ao ambiente de desenvolvimento da API. 
+
+----
+## Passo extra: Experimentando a API  (aplicação JavaScript, habilitando o Cross)
+
+- Instale a extensão para dar esse suporte ao CROSS, que é feito pela biblioteca flask_cors:
+
+        pipenv install flask_cors
+
+- Depois no arquivo app.py, adicione um novo import:
+
+```python
+from flask_cors import CORS
+```
+
+- E então, será executado a função CORS ao aplicativo:
+
+```python
+CORS(app)
+```
+- O código completo pode ser acessado em: \url{http://bit.ly/2PcfHXZ}. 
+
+- Atualizado esse código, deve-se enviar as modificações para o repositório e, por fim, executar a implantação novamente no Heroku. 
+
+---
+## Passo extra: Experimentando a API  (aplicação JavaScript)
+
+- Com o serviço implantado e atualizado, basta executar o código novamente para ser impresso os dados em JSON no console. 
+
+![](figuras/javascript_request.png)
+
+> Lembrando, que esse é um exemplo extremamente simples, porém a sua execução mostra que a API está pronta para ser usada por aplicações em JavaScript.
 
 ---
 
-Evolução
+## Passo extra: Experimentando a API  (evolução)
 
-O site do governo do Maranhão possui diversos outros dados que poderão ser extraídos. Por exemplo, ao acessar um dado órgão, pela seguinte \url{http://www.transparencia.ma.gov.br/app/despesas/por-funcao/2019/funcao/12/orgao/240201} é possível ter acesso aos nomes, CPF ou CNPJ dos credores, e também os valores empenhado, liquidado e pago, como na Figura \ref{fig:credores}. \\ \\ \\
+- O site do governo do Maranhão possui diversos outros dados que poderão ser extraídos. Por exemplo, ao acessar um dado órgão, pela seguinte http://www.transparencia.ma.gov.br/app/despesas/por-funcao/2019/funcao/12/orgao/240201 é possível ter acesso aos nomes, CPF ou CNPJ dos credores, e também os valores empenhado, liquidado e pago:
 
 ![](figuras/tabela_por_unidade.png)
 
-\begin{figure}[htb]
-    \centering
-    \includegraphics[width=.9\columnwidth]{Figuras/tabela_por_unidade.png}
-    \caption{Credores de um dado orgão público}
-    \label{fig:credores}
-\end{figure}
 
+- Observa-se que a tabela é muito similar a que foi extraída, com a diferença que cada credor possui um CPF ou CNPJ em vez de um código. Então o Código será muito similar:
 
-Observa-se que a tabela é muito similar a que foi extraída na Seção \ref{sec:mapeando}, com a diferença que cada credor possui um CPF ou CNPJ em vez de um código. Então o Código \ref{lst:despesas_orgao} será também muito similar ao escrito anteriormente na Seção \ref{sec:mapeando}
-
-\begin{lstlisting}[language=python, firstnumber=30, label={lst:despesas_orgao},caption={Extraindo os dados por orgão público}]
-
+```python
 def despesas_por_orgao (orgao, funcao, ano):
     url = "http://www.transparencia.ma.gov.br/app/despesas/por-funcao/"+ano+"/funcao/"+funcao+"/orgao/"+orgao+"?#lista"
     response = requests.get(url)
@@ -710,17 +788,18 @@ def despesas_por_orgao (orgao, funcao, ano):
         despesa["pago"] = parse_decimal (cols[3].get_text().strip(), locale='pt_BR')
         despesas.append(despesa)
     return despesas
-\end{lstlisting}
+```
 
-Após criar a função do Código \ref{lst:despesas_orgao}, é possível criar uma nova rota que inclui o código do órgão administrativo, por exemplo: \url{https://transparencia-ma.herokuapp.com/despesas/240206/12/2018}. Então, será necessário atualizar a rota, fazer um novo \textit{commit}, enviar as atualizações e executar um novo \textit{deploy}.
+- Agora é criar uma nova rota que inclui o código do órgão administrativo. Tentem fazer essa rota, e fazer uma nova implantação
+
+---
+## Considerações finais
 
 O processo de transformação de dados públicos em dados abertos requer muita exploração do site de dados públicos. Por exemplo, aqui seria possível extrair ainda diversas outras informações como:
 
-\begin{itemize}
-    \item Ainda sobre despesas, é possível extrair informações detalhadas por credor. 
-    \item Além dos dados de despesas, pode-se extrair os dados de receitas de modo muito similar.
-    \item Dados sobre servidores públicos, como salário e diárias.
-    \item Transferência de valores, por exemplo, repasse a municípios.
-\end{itemize}
+- Ainda sobre despesas, é possível extrair informações detalhadas por credor. 
+- Além dos dados de despesas, pode-se extrair os dados de receitas de modo muito similar.
+- Dados sobre servidores públicos, como salário e diárias.
+- Transferência de valores, por exemplo, repasse a municípios.
 
 Além desses dados é possível evoluir bastante essa API, permitindo extrair cada vez mais informações relevantes.
