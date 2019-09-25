@@ -34,9 +34,19 @@ Considerações finais
 
 ---
 
+
 ## Introdução
 
 - O objetivo desse minicurso é apresentar uma solução para expor os dados públicos como dados abertos utilizando para isso a extração de dados e disponibilizá-los através de uma API implantada na plataforma Heroku.
+
+Algo similar ao que estamos fazendo com os dados dad UFMA, onde estamos criando a seguinte API de dados abertos:
+
+* https://dados-ufma.herokuapp.com/
+
+Adicionalmente, um servidor de dados conectados:
+
+* https://linked-ufma.herokuapp.com/
+
 
 ---
 ## Introdução (principais requisitos)
