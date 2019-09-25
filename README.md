@@ -4,13 +4,19 @@
 * Mateus Vitor Duarte Sousa
 * Micael Lopes da Silva
 
+[Acessem aqui o Capítulo do Livro - Rascunho](minicurso_ercemapi_cap_rascunho.pdf)
+
 ---
 ## Roteiro
 
 1. Introdução
 2. Passo 1: Identificação e modelagem dos dados
-
-Considerações finais
+3. Passo 2: Extração dos dados
+4. Passo 3: Desenvolvimento da API
+5. Passo 4: Documentação
+6. Passo 5: Implantação 
+7. Passo extra: Experimentando a API 
+8. Considerações finais
 
 
 ---
