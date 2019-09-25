@@ -471,7 +471,7 @@ Atualizando a documentação as rotas e métodos, através do decorator `api.doc
 class Despesas(Resource):
     @api.doc(responses={ 200: 'OK', 400: 'Despesas não encontradas' },  params={ 'ano': 'Ano de referência para as despesas' })
     def get(self, ano):
-        return despesas.despesas_total(ano)
+        return despesas_total(ano)
         
 @ns.route('/<string:cod_funcao>/<string:ano>')
 class DespesasPorFuncao(Resource):
@@ -479,7 +479,7 @@ class DespesasPorFuncao(Resource):
      params={ 'ano': 'Ano de referência para as despesas',
     'cod_funcao' : 'Código da função (educação, saúde ...) de referência para as despesas'})
     def get(self, cod_funcao, ano):
-        return despesas.despesas_por_funcao(cod_funcao, ano)
+        return despesas_por_funcao(cod_funcao, ano)
 ```
   
 Tendo como resultado:
